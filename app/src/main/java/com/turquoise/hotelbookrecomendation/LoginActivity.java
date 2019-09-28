@@ -37,8 +37,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (getUsername().equals("") && getUsername().length() < 5) {
                 setError(username, "Enter valid username with length greater than 5 char");
             }
-        } else {
-            newActivity(LoginActivity.this, MainActivity.class);
+            else {
+                newActivity(LoginActivity.this, MainActivity.class);
+            }
         }
 
     }
