@@ -1,7 +1,9 @@
 package com.turquoise.hotelbookrecomendation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +36,9 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private HotelAdapter hotelAdapter;
     private OnFragmentInteractionListener mListener;
+    HotelResult hotelResult;
 
     public HomeFrag() {
         // Required empty public constructor
@@ -79,29 +82,55 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
         // Inflate the layout for this fragment
 
 
-        RecyclerView recyclerView=view.findViewById(R.id.hotelList);
+
+
+
+        return view;
+    }
+
+    public String getHotels(){
+        SharedPreferences sp=getActivity().getSharedPreferences("hotel",Context.MODE_PRIVATE);
+        Gson gson=new Gson();
+        if(sp.contains("data")){
+
+            return sp.getString("data",null);
+        }
+        else{
+            return null;
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        RecyclerView recyclerView=getActivity().findViewById(R.id.hotelList);
 
         HotelAdapter hotelAdapter=new HotelAdapter(getContext(), this);
         Gson gson=new Gson();
 
-        BufferedReader br= null;
-        try {
-            br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(getHotels()==null) {
+
+
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            hotelResult =gson.fromJson(br, HotelResult.class);
+
+
+        }
+        else {
+            hotelResult=gson.fromJson(getHotels(),HotelResult.class);
         }
 
-
-
-        HotelResult hotelResult;
-        hotelResult =gson.fromJson(br, HotelResult.class);
-
         hotelAdapter.setHotels(hotelResult.getHotels());
+        Log.d("afafaf", "onCreateView: "+hotelResult.getHotels().get(0).getCompletedBookings());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(hotelAdapter);
 
-
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -115,13 +144,21 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+//
+//
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+    }
 
+    public void updateList() {
+        if(hotelAdapter!=null){
 
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            hotelAdapter.setHotels(hotelResult.getHotels());
+
         }
     }
 

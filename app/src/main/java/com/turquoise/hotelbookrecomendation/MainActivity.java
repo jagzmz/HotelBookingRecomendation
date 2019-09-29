@@ -1,9 +1,11 @@
 package com.turquoise.hotelbookrecomendation;
 
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -14,12 +16,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.turquoise.hotelbookrecomendation.model.Booking;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragmentInteractionListener, Recommendation.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CartListener, Serializable {
 
-    private Toolbar toolbar;
+    private static Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public static Booking bookings=new Booking();
@@ -45,6 +48,18 @@ public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragme
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("activityresult", "onActivityResult: "+resultCode);
+        if(resultCode!=1){
+            update(-1);
+        }
+        else {
+            update(1);
+        }
+    }
+
     private void setupViewPager(final ViewPager viewPager) {
         final ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFrag(new HomeFrag(),"Home");
@@ -62,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragme
                     ((Recommendation)viewPagerAdapter.getItem(position)).updateList();
 
                 }
+                else{
+                    ((HomeFrag)viewPagerAdapter.getItem(position)).updateList();
+                }
             }
 
             @Override
@@ -71,19 +89,29 @@ public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragme
         });
         viewPager.setAdapter(viewPagerAdapter);
     }
+//
+//    @Override
+//    public void onFragmentInteraction(String s) {
+//
+//        int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
+//        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(++cur));
+//
+//    }
+
+
 
     @Override
-    public void onFragmentInteraction(String s) {
-
+    public void update(int n) {
         int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
-        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(++cur));
-
+        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(cur+n));
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public static void updatec(int n) {
+        int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
+        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(cur+n));
     }
+
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

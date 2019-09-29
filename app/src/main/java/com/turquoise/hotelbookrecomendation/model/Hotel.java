@@ -3,7 +3,9 @@ package com.turquoise.hotelbookrecomendation.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Hotel {
+import java.io.Serializable;
+
+public class Hotel implements Serializable {
 
     @SerializedName("name")
     @Expose

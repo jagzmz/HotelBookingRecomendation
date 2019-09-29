@@ -1,6 +1,8 @@
 package com.turquoise.hotelbookrecomendation;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +49,7 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 
 
     private OnFragmentInteractionListener mListener;
+    private HotelResult hotelResult;
 
     public Recommendation() {
         // Required empty public constructor
@@ -84,14 +88,9 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_recommendation, container, false);
 
-        RecyclerView recyclerView=v.findViewById(R.id.hotelList);
 
-       this.recommendationAdapter =new RecommendationAdapter(getContext(), this);
+//        v.onWindowFocusChanged(new );
 
-
-        recommendationAdapter.setHotels(getHotelWithTags());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(recommendationAdapter);
 
 
 
@@ -101,11 +100,32 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        RecyclerView recyclerView=getActivity().findViewById(R.id.hotelList);
+
+        this.recommendationAdapter =new RecommendationAdapter(getContext(), this);
+
+
+        recommendationAdapter.setHotels(getHotelWithTags());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(recommendationAdapter);
+
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("activityresult", "onActivityResult: "+resultCode);
+
     }
 
     @Override
@@ -120,12 +140,12 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
         Log.d("ASASSA", "onCreateView: "+sa);
         Notif.showToast(getActivity(),sa);
 
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
@@ -138,17 +158,22 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 
         Gson gson=new Gson();
 
-        BufferedReader br= null;
-        try {
-            br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(getHotels()==null) {
+
+
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            hotelResult =gson.fromJson(br, HotelResult.class);
+
+
         }
-
-
-
-        HotelResult hotelResult;
-        hotelResult =gson.fromJson(br, HotelResult.class);
+        else {
+            hotelResult=gson.fromJson(getHotels(),HotelResult.class);
+        }
 
         Set<String> registeredHotels=new HashSet<>();
 
@@ -181,6 +206,19 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
             recommendationAdapter.setHotels(getHotelWithTags());
 
         }
+    }
+
+
+    public String getHotels(){
+        SharedPreferences sp=getActivity().getSharedPreferences("hotel",Context.MODE_PRIVATE);
+        Gson gson=new Gson();
+        if(sp.contains("data")){
+            return sp.getString("data",null);
+        }
+        else{
+            return null;
+        }
+
     }
 
     @Override

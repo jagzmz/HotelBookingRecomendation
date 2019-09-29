@@ -29,6 +29,7 @@
             <ImageView
                 android:id="@+id/hotelImage"
                 android:layout_width="match_parent"
+                android:scaleType="centerCrop"
                 android:layout_height="130dp" />
 
             <LinearLayout
@@ -63,6 +64,7 @@
             <TextView
                 android:layout_width="39dp"
                 android:layout_height="wrap_content"
+                android:id="@+id/hotelCardViews"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@id/hotelBookButton"

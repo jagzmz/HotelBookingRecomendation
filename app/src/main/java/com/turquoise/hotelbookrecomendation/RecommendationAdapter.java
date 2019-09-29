@@ -1,8 +1,8 @@
 package com.turquoise.hotelbookrecomendation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
-import com.turquoise.hotelbookrecomendation.Utils.Notif;
-import com.turquoise.hotelbookrecomendation.model.Booking;
 import com.turquoise.hotelbookrecomendation.model.Hotel;
-import com.turquoise.hotelbookrecomendation.model.UserHotel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.HotelViewHolder> {
+public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.HotelViewHolder> implements Serializable {
 
     private final Context context;
     private final LayoutInflater inflater;
@@ -44,18 +42,22 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         notifyDataSetChanged();
     }
 
+
+
+
     @NonNull
     @Override
     public HotelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         view = inflater.inflate(R.layout.hotelcard, parent, false);
+
         hotelViewHolder = new HotelViewHolder(view);
 
         return hotelViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HotelViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final HotelViewHolder holder, final int position) {
         Picasso
                 .with(context)
                 .load(Uri.parse(hotels.get(position).getImageUrl()))
@@ -64,6 +66,19 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         holder.hotelRatings.setText(hotels.get(position).getRatings());
         holder.tags.setText(hotels.get(position).getTags());
         holder.hotelName.setText(hotels.get(position).getName());
+        holder.hotelViews.setText(hotels.get(position).getVisits()+"\nViews");
+        holder.bookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int vis=Integer.valueOf(hotels.get(position).getVisits());
+                hotels.get(position).setVisits(String.valueOf(++vis));
+                setHotels(new HashSet<>(hotels));
+                Intent i=new Intent(context,HotelInfo.class);
+                i.putExtra("data",hotels.get(position));
+                context.startActivity(i);
+
+            }
+        });
 
     }
 
@@ -74,63 +89,33 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
 
 
-    class HotelViewHolder extends RecyclerView.ViewHolder {
+    public class HotelViewHolder extends RecyclerView.ViewHolder implements UpdateListener,Serializable {
 
+        TextView hotelViews;
         ImageView hotelImage;
         TextView hotelRatings, hotelName;
         TextView tags;
         Button bookButton;
 
-        public HotelViewHolder(@NonNull View itemView) {
+        public HotelViewHolder(@NonNull final View itemView) {
             super(itemView);
             hotelImage = itemView.findViewById(R.id.hotelImage);
             hotelRatings = itemView.findViewById(R.id.ratings);
             bookButton = itemView.findViewById(R.id.hotelBookButton);
             tags = itemView.findViewById(R.id.tagsList);
             hotelName = itemView.findViewById(R.id.hotelName);
-
-            bookButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    UserHotel hotel = new UserHotel();
-                    hotel.setName(hotelName.getText().toString());
-                    hotel.setCompleted(true);
-                    hotel.setTags(tags.getText().toString());
-                    Booking booking = new Booking();
-
-                    List<UserHotel> userHotels = MainActivity.bookings.getUserHotels();
-                    userHotels.add(hotel);
-                    MainActivity.bookings.setUserHotels(userHotels);
-
-                    cartListener.click("Hotel Name");
-                    Set<String> s=new HashSet<>();
-                    for(UserHotel userHotel:MainActivity.bookings.getUserHotels()){
-                        if(userHotel.getCompleted()){
-                            for(String ss:userHotel.getTags().split("\n")){
-                                Log.d("reco", "onClick: "+ss);
-                                ss=ss.replace("null","");
-
-                                s.add(ss);
-                            }
-
-                        }
-                    }
-                    String sa="";
-
-                    for(String sss:s){
-                        sa+=sss;
-                        Recommendation.tagSet.add(sss);
-                    }
-                    Notif.showToast(context,sa);
-                }
-            });
-
-
+            hotelViews=itemView.findViewById(R.id.hotelCardViews);
 
         }
-    }
 
+        @Override
+        public void update() {
+            notifyItemChanged(getAdapterPosition());
+        }
+    }
+    public interface UpdateListener extends Serializable{
+        void update();
+    }
     interface CartListener {
         void click(String hotel_name);
     }
