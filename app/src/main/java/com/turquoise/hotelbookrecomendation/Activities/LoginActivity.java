@@ -38,16 +38,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId() == R.id.loginBtn) {
             if (getUsername().equals("") || getUsername().length() < 5) {
                 setError(username, "Enter valid username with length greater than 5 char");
-            }
-            else {
+            } else {
 
-                SharedPreferences sharedPreferences=getSharedPreferences(getUsername(),MODE_PRIVATE);
-                SharedPreferences.Editor editor=getSharedPreferences(getUsername(),MODE_PRIVATE).edit();
+                SharedPreferences sharedPreferences = getSharedPreferences(getUsername(), MODE_PRIVATE);
+                SharedPreferences.Editor editor = getSharedPreferences(getUsername(), MODE_PRIVATE).edit();
 
-                if(sharedPreferences.getString("active","in").equals("in")){
+                if (sharedPreferences.getString("active", "in").equals("in")) {
 
-                    SharedPreferences.Editor edit=getSharedPreferences("cur",MODE_PRIVATE).edit();
-                    edit.putString("user",getUsername());
+                    SharedPreferences.Editor edit = getSharedPreferences("cur", MODE_PRIVATE).edit();
+                    edit.putString("user", getUsername());
 
                 }
 

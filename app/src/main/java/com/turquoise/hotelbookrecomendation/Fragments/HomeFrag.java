@@ -72,12 +72,6 @@ public class HomeFrag extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_home, container, false);
 
-
-
-
-
-
-
         return view;
     }
 

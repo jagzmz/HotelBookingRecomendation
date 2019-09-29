@@ -38,7 +38,7 @@ public class Recommendation extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    public static Set<String> tagSet=new HashSet<>();
+    public static Set<String> tagSet = new HashSet<>();
     RecommendationAdapter recommendationAdapter;
 
 
@@ -79,15 +79,12 @@ public class Recommendation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v= inflater.inflate(R.layout.fragment_recommendation, container, false);
+        View v = inflater.inflate(R.layout.fragment_recommendation, container, false);
 
 
-//        v.onWindowFocusChanged(new );
+        RecyclerView recyclerView = v.findViewById(R.id.hotelList);
 
-
-        RecyclerView recyclerView=v.findViewById(R.id.hotelList);
-
-        this.recommendationAdapter =new RecommendationAdapter(getContext());
+        this.recommendationAdapter = new RecommendationAdapter(getContext());
 
 
         recommendationAdapter.setHotels(getHotelWithTags());
@@ -95,7 +92,6 @@ public class Recommendation extends Fragment {
         recyclerView.setAdapter(recommendationAdapter);
 
         return v;
-
 
 
     }
@@ -115,7 +111,7 @@ public class Recommendation extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("activityresult", "onActivityResult: "+resultCode);
+        Log.d("activityresult", "onActivityResult: " + resultCode);
 
     }
 
@@ -123,12 +119,11 @@ public class Recommendation extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        String sa="";
+        String sa = "";
 
-        for(String sss:Recommendation.tagSet){
-            sa+=sss;
+        for (String sss : Recommendation.tagSet) {
+            sa += sss;
         }
-        Log.d("ASASSA", "onCreateView: "+sa);
 
 
     }
@@ -138,11 +133,11 @@ public class Recommendation extends Fragment {
         super.onDetach();
     }
 
-    public Set<Hotel> getHotelWithTags(){
+    public Set<Hotel> getHotelWithTags() {
 
-        Gson gson=new Gson();
+        Gson gson = new Gson();
 
-        if(getHotels()==null) {
+        if (getHotels() == null) {
 
 
             BufferedReader br = null;
@@ -151,28 +146,26 @@ public class Recommendation extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            hotelResult =gson.fromJson(br, HotelResult.class);
+            hotelResult = gson.fromJson(br, HotelResult.class);
 
 
+        } else {
+            hotelResult = gson.fromJson(getHotels(), HotelResult.class);
         }
-        else {
-            hotelResult=gson.fromJson(getHotels(),HotelResult.class);
-        }
 
-        Set<String> registeredHotels=new HashSet<>();
+        Set<String> registeredHotels = new HashSet<>();
 
-        Set<Hotel> hotelList=new HashSet<>();
+        Set<Hotel> hotelList = new HashSet<>();
 
-        for(UserHotel userHotel: MainActivity.bookings.getUserHotels()){
-            Log.d("CHECK", "getHotelWithTags: "+userHotel.getTags()+" ");
-                registeredHotels.add(userHotel.getName());
+        for (UserHotel userHotel : MainActivity.bookings.getUserHotels()) {
+            registeredHotels.add(userHotel.getName());
 
 
         }
 
-        for(Hotel hotel:hotelResult.getHotels()){
-            for(String hh: hotel.getTags().split("\n")){
-                if(Recommendation.tagSet.contains(hh)&&!registeredHotels.contains(hotel.getName())){
+        for (Hotel hotel : hotelResult.getHotels()) {
+            for (String hh : hotel.getTags().split("\n")) {
+                if (Recommendation.tagSet.contains(hh) && !registeredHotels.contains(hotel.getName())) {
 
                     hotelList.add(hotel);
 
@@ -185,7 +178,7 @@ public class Recommendation extends Fragment {
     }
 
     public void updateList() {
-        if(recommendationAdapter!=null){
+        if (recommendationAdapter != null) {
 
             recommendationAdapter.setHotels(getHotelWithTags());
 
@@ -193,18 +186,16 @@ public class Recommendation extends Fragment {
     }
 
 
-    public String getHotels(){
-        SharedPreferences sp=getActivity().getSharedPreferences("hotel",Context.MODE_PRIVATE);
-        Gson gson=new Gson();
-        if(sp.contains("data")){
-            return sp.getString("data",null);
-        }
-        else{
+    public String getHotels() {
+        SharedPreferences sp = getActivity().getSharedPreferences("hotel", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        if (sp.contains("data")) {
+            return sp.getString("data", null);
+        } else {
             return null;
         }
 
     }
-
 
 
 }

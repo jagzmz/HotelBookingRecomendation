@@ -30,7 +30,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
     private View view;
     private HotelViewHolder hotelViewHolder;
     private List<Hotel> hotels;
-    private HotelResult hotelResult=new HotelResult();
+    private HotelResult hotelResult = new HotelResult();
 
     public HotelAdapter(Context context) {
         this.context = context;
@@ -40,16 +40,16 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
     public void setHotels(List<Hotel> lists) {
         this.hotels = lists;
         hotelResult.setHotels(hotels);
-        HotelResult hotelResult=new HotelResult();
+        HotelResult hotelResult = new HotelResult();
         hotelResult.setHotels(hotels);
         storeUpdates(hotelResult);
         notifyDataSetChanged();
     }
 
-    public void storeUpdates(HotelResult hotelResult){
-        SharedPreferences.Editor spe=context.getSharedPreferences("hotel",Context.MODE_PRIVATE).edit();
-        Gson gson=new Gson();
-        spe.putString("data",gson.toJson(hotelResult));
+    public void storeUpdates(HotelResult hotelResult) {
+        SharedPreferences.Editor spe = context.getSharedPreferences("hotel", Context.MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        spe.putString("data", gson.toJson(hotelResult));
         spe.apply();
 
     }
@@ -74,24 +74,23 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
         holder.hotelRatings.setText(hotels.get(position).getRatings());
         holder.tags.setText(hotels.get(position).getTags());
         holder.hotelName.setText(hotels.get(position).getName());
-        holder.hotelViews.setText(hotels.get(position).getVisits()+"\nViews");
+        holder.hotelViews.setText(hotels.get(position).getVisits() + "\nViews");
         holder.bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int vis=Integer.valueOf(hotels.get(position).getVisits());
+                int vis = Integer.valueOf(hotels.get(position).getVisits());
                 hotels.get(position).setVisits(String.valueOf(++vis));
                 setHotels(hotels);
-                Intent i=new Intent(context, HotelInfo.class);
-                i.putExtra("hotels",hotelResult);
-                i.putExtra("pos",position);
-                i.putExtra("data",hotels.get(position));
+                Intent i = new Intent(context, HotelInfo.class);
+                i.putExtra("hotels", hotelResult);
+                i.putExtra("pos", position);
+                i.putExtra("data", hotels.get(position));
                 context.startActivity(i);
 
             }
         });
 
     }
-
 
 
     @Override
@@ -102,7 +101,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
     class HotelViewHolder extends RecyclerView.ViewHolder {
 
         ImageView hotelImage;
-        TextView hotelRatings, hotelName,hotelViews;
+        TextView hotelRatings, hotelName, hotelViews;
 
         TextView tags;
         Button bookButton;
@@ -114,9 +113,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
             bookButton = itemView.findViewById(R.id.hotelBookButton);
             tags = itemView.findViewById(R.id.tagsList);
             hotelName = itemView.findViewById(R.id.hotelName);
-            hotelViews=itemView.findViewById(R.id.hotelCardViews);
-
-
+            hotelViews = itemView.findViewById(R.id.hotelCardViews);
 
 
         }
