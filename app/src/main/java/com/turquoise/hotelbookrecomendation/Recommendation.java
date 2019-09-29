@@ -3,11 +3,26 @@ package com.turquoise.hotelbookrecomendation;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+import com.turquoise.hotelbookrecomendation.Utils.Notif;
+import com.turquoise.hotelbookrecomendation.model.Hotel;
+import com.turquoise.hotelbookrecomendation.model.HotelResult;
+import com.turquoise.hotelbookrecomendation.model.UserHotel;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,7 +32,7 @@ import androidx.fragment.app.Fragment;
  * Use the {@link Recommendation#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Recommendation extends Fragment {
+public class Recommendation extends Fragment implements RecommendationAdapter.CartListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,6 +41,9 @@ public class Recommendation extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public static Set<String> tagSet=new HashSet<>();
+    RecommendationAdapter recommendationAdapter;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +82,23 @@ public class Recommendation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recommendation, container, false);
+        View v= inflater.inflate(R.layout.fragment_recommendation, container, false);
+
+        RecyclerView recyclerView=v.findViewById(R.id.hotelList);
+
+       this.recommendationAdapter =new RecommendationAdapter(getContext(), this);
+
+
+        recommendationAdapter.setHotels(getHotelWithTags());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(recommendationAdapter);
+
+
+
+        return v;
+
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -77,6 +111,15 @@ public class Recommendation extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        String sa="";
+
+        for(String sss:Recommendation.tagSet){
+            sa+=sss;
+        }
+        Log.d("ASASSA", "onCreateView: "+sa);
+        Notif.showToast(getActivity(),sa);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -89,6 +132,60 @@ public class Recommendation extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public Set<Hotel> getHotelWithTags(){
+
+        Gson gson=new Gson();
+
+        BufferedReader br= null;
+        try {
+            br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        HotelResult hotelResult;
+        hotelResult =gson.fromJson(br, HotelResult.class);
+
+        Set<String> registeredHotels=new HashSet<>();
+
+        Set<Hotel> hotelList=new HashSet<>();
+
+        for(UserHotel userHotel:MainActivity.bookings.getUserHotels()){
+            Log.d("CHECK", "getHotelWithTags: "+userHotel.getTags()+" ");
+                registeredHotels.add(userHotel.getName());
+
+
+        }
+
+        for(Hotel hotel:hotelResult.getHotels()){
+            for(String hh: hotel.getTags().split("\n")){
+                if(Recommendation.tagSet.contains(hh)&&!registeredHotels.contains(hotel.getName())){
+
+                    hotelList.add(hotel);
+
+                }
+            }
+        }
+
+        return hotelList;
+
+    }
+
+    public void updateList() {
+        if(recommendationAdapter!=null){
+
+            recommendationAdapter.setHotels(getHotelWithTags());
+
+        }
+    }
+
+    @Override
+    public void click(String hotel_name) {
+
     }
 
     /**

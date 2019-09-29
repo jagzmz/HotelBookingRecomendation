@@ -1,13 +1,21 @@
 package com.turquoise.hotelbookrecomendation;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+import com.turquoise.hotelbookrecomendation.model.HotelResult;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,7 +25,7 @@ import androidx.fragment.app.Fragment;
  * Use the {@link HomeFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFrag extends Fragment {
+public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,12 +71,41 @@ public class HomeFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        View view=inflater.inflate(R.layout.fragment_home, container, false);
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        RecyclerView recyclerView=view.findViewById(R.id.hotelList);
+
+        HotelAdapter hotelAdapter=new HotelAdapter(getContext(), this);
+        Gson gson=new Gson();
+
+        BufferedReader br= null;
+        try {
+            br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        HotelResult hotelResult;
+        hotelResult =gson.fromJson(br, HotelResult.class);
+
+        hotelAdapter.setHotels(hotelResult.getHotels());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(hotelAdapter);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -77,6 +114,9 @@ public class HomeFrag extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -91,6 +131,11 @@ public class HomeFrag extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void click(String hotel_name) {
+        onButtonPressed("Name");
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -103,6 +148,6 @@ public class HomeFrag extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String uri);
     }
 }

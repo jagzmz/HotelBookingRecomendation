@@ -2,6 +2,7 @@ package com.turquoise.hotelbookrecomendation;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,15 +12,17 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.turquoise.hotelbookrecomendation.model.Booking;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragmentInteractionListener , Recommendation.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragmentInteractionListener, Recommendation.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    public static Booking bookings=new Booking();
 
 
     @Override
@@ -42,11 +45,39 @@ public class MainActivity extends AppCompatActivity implements HomeFrag.OnFragme
 
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
+    private void setupViewPager(final ViewPager viewPager) {
+        final ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFrag(new HomeFrag(),"Home");
         viewPagerAdapter.addFrag(new Recommendation(),"Recommendations");
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position==1){
+
+                    ((Recommendation)viewPagerAdapter.getItem(position)).updateList();
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    @Override
+    public void onFragmentInteraction(String s) {
+
+        int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
+        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(++cur));
+
     }
 
     @Override

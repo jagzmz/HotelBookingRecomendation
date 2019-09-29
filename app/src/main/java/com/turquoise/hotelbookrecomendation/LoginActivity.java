@@ -1,5 +1,6 @@
 package com.turquoise.hotelbookrecomendation;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 setError(username, "Enter valid username with length greater than 5 char");
             }
             else {
+
+                SharedPreferences sharedPreferences=getSharedPreferences(getUsername(),MODE_PRIVATE);
+                SharedPreferences.Editor editor=getSharedPreferences(getUsername(),MODE_PRIVATE).edit();
+
+                if(sharedPreferences.getString("active","in").equals("in")){
+
+                    SharedPreferences.Editor edit=getSharedPreferences("cur",MODE_PRIVATE).edit();
+                    edit.putString("user",getUsername());
+
+                }
+
+
                 newActivity(LoginActivity.this, MainActivity.class);
             }
         }
