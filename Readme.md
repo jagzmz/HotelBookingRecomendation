@@ -22,6 +22,6 @@
 4. Activities including Views, Drafts, Bookings are displayed to all. 
 
 ## Recommendation System
->Each hotel has tags attached with it. Upon successful booking of the user,
->He/she can navigate to the "**Recommendation**" tab to see relevant hotels having similar tags.
+Each hotel has tags attached with it. Upon successful booking of the user,
+He/she can navigate to the "**Recommendation**" tab to see relevant hotels having similar tags.
 
