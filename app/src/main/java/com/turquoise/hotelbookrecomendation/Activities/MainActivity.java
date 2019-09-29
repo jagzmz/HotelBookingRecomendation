@@ -1,11 +1,8 @@
-package com.turquoise.hotelbookrecomendation;
+package com.turquoise.hotelbookrecomendation.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -14,13 +11,16 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.turquoise.hotelbookrecomendation.Fragments.HomeFrag;
+import com.turquoise.hotelbookrecomendation.Fragments.Recommendation;
+import com.turquoise.hotelbookrecomendation.R;
 import com.turquoise.hotelbookrecomendation.model.Booking;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CartListener, Serializable {
+public class MainActivity extends AppCompatActivity implements Serializable {
 
     private static Toolbar toolbar;
     private TabLayout tabLayout;
@@ -48,17 +48,7 @@ public class MainActivity extends AppCompatActivity implements CartListener, Ser
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("activityresult", "onActivityResult: "+resultCode);
-        if(resultCode!=1){
-            update(-1);
-        }
-        else {
-            update(1);
-        }
-    }
+
 
     private void setupViewPager(final ViewPager viewPager) {
         final ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
@@ -89,22 +79,9 @@ public class MainActivity extends AppCompatActivity implements CartListener, Ser
         });
         viewPager.setAdapter(viewPagerAdapter);
     }
-//
-//    @Override
-//    public void onFragmentInteraction(String s) {
-//
-//        int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
-//        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(++cur));
-//
-//    }
 
 
 
-    @Override
-    public void update(int n) {
-        int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());
-        ((TextView)toolbar.findViewById(R.id.cartCount)).setText(String.valueOf(cur+n));
-    }
 
     public static void updatec(int n) {
         int cur=Integer.valueOf(((TextView)toolbar.findViewById(R.id.cartCount)).getText().toString());

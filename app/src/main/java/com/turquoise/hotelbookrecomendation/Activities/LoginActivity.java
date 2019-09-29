@@ -1,4 +1,4 @@
-package com.turquoise.hotelbookrecomendation;
+package com.turquoise.hotelbookrecomendation.Activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.turquoise.hotelbookrecomendation.R;
 
 import static com.turquoise.hotelbookrecomendation.Utils.Utilities.newActivity;
 

@@ -1,4 +1,4 @@
-package com.turquoise.hotelbookrecomendation;
+package com.turquoise.hotelbookrecomendation.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.turquoise.hotelbookrecomendation.Activities.MainActivity;
+import com.turquoise.hotelbookrecomendation.Adapters.RecommendationAdapter;
+import com.turquoise.hotelbookrecomendation.R;
 import com.turquoise.hotelbookrecomendation.Utils.Notif;
 import com.turquoise.hotelbookrecomendation.model.Hotel;
 import com.turquoise.hotelbookrecomendation.model.HotelResult;
@@ -27,15 +30,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Recommendation.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Recommendation#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Recommendation extends Fragment implements RecommendationAdapter.CartListener {
+public class Recommendation extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -48,7 +43,6 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
     RecommendationAdapter recommendationAdapter;
 
 
-    private OnFragmentInteractionListener mListener;
     private HotelResult hotelResult;
 
     public Recommendation() {
@@ -92,7 +86,14 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 //        v.onWindowFocusChanged(new );
 
 
+        RecyclerView recyclerView=v.findViewById(R.id.hotelList);
 
+        this.recommendationAdapter =new RecommendationAdapter(getContext());
+
+
+        recommendationAdapter.setHotels(getHotelWithTags());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(recommendationAdapter);
 
         return v;
 
@@ -103,22 +104,13 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
     @Override
     public void onResume() {
         super.onResume();
-        RecyclerView recyclerView=getActivity().findViewById(R.id.hotelList);
 
-        this.recommendationAdapter =new RecommendationAdapter(getContext(), this);
-
-
-        recommendationAdapter.setHotels(getHotelWithTags());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(recommendationAdapter);
 
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
@@ -140,18 +132,12 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
         Log.d("ASASSA", "onCreateView: "+sa);
         Notif.showToast(getActivity(),sa);
 
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public Set<Hotel> getHotelWithTags(){
@@ -179,7 +165,7 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 
         Set<Hotel> hotelList=new HashSet<>();
 
-        for(UserHotel userHotel:MainActivity.bookings.getUserHotels()){
+        for(UserHotel userHotel: MainActivity.bookings.getUserHotels()){
             Log.d("CHECK", "getHotelWithTags: "+userHotel.getTags()+" ");
                 registeredHotels.add(userHotel.getName());
 
@@ -221,23 +207,6 @@ public class Recommendation extends Fragment implements RecommendationAdapter.Ca
 
     }
 
-    @Override
-    public void click(String hotel_name) {
 
-    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

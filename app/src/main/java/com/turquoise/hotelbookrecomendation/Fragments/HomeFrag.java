@@ -1,4 +1,4 @@
-package com.turquoise.hotelbookrecomendation;
+package com.turquoise.hotelbookrecomendation.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,21 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.turquoise.hotelbookrecomendation.Adapters.HotelAdapter;
+import com.turquoise.hotelbookrecomendation.R;
 import com.turquoise.hotelbookrecomendation.model.HotelResult;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeFrag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeFrag#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
+
+public class HomeFrag extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,7 +32,6 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
     private String mParam1;
     private String mParam2;
     private HotelAdapter hotelAdapter;
-    private OnFragmentInteractionListener mListener;
     HotelResult hotelResult;
 
     public HomeFrag() {
@@ -79,7 +73,6 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        // Inflate the layout for this fragment
 
 
 
@@ -106,7 +99,7 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
         super.onResume();
         RecyclerView recyclerView=getActivity().findViewById(R.id.hotelList);
 
-        HotelAdapter hotelAdapter=new HotelAdapter(getContext(), this);
+        HotelAdapter hotelAdapter=new HotelAdapter(getContext());
         Gson gson=new Gson();
 
         if(getHotels()==null) {
@@ -135,23 +128,13 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-//
-//
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     public void updateList() {
@@ -165,26 +148,6 @@ public class HomeFrag extends Fragment implements HotelAdapter.CartListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    @Override
-    public void click(String hotel_name) {
-        onButtonPressed("Name");
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String uri);
-    }
 }

@@ -5,7 +5,7 @@
     android:id="@+id/fragment_hotel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HotelInfo">
+    tools:context=".Activities.HotelInfo">
 
 
     <com.google.android.material.appbar.AppBarLayout

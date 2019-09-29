@@ -1,4 +1,4 @@
-package com.turquoise.hotelbookrecomendation;
+package com.turquoise.hotelbookrecomendation.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.turquoise.hotelbookrecomendation.Adapters.RecommendationAdapter;
+import com.turquoise.hotelbookrecomendation.Fragments.Recommendation;
+import com.turquoise.hotelbookrecomendation.R;
 import com.turquoise.hotelbookrecomendation.model.Booking;
 import com.turquoise.hotelbookrecomendation.model.Hotel;
 import com.turquoise.hotelbookrecomendation.model.HotelResult;
