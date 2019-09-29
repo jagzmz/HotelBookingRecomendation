@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.turquoise.hotelbookrecomendation.Activities.MainActivity;
 import com.turquoise.hotelbookrecomendation.Adapters.RecommendationAdapter;
 import com.turquoise.hotelbookrecomendation.R;
-import com.turquoise.hotelbookrecomendation.Utils.Notif;
 import com.turquoise.hotelbookrecomendation.model.Hotel;
 import com.turquoise.hotelbookrecomendation.model.HotelResult;
 import com.turquoise.hotelbookrecomendation.model.UserHotel;
@@ -130,7 +129,6 @@ public class Recommendation extends Fragment {
             sa+=sss;
         }
         Log.d("ASASSA", "onCreateView: "+sa);
-        Notif.showToast(getActivity(),sa);
 
 
     }
