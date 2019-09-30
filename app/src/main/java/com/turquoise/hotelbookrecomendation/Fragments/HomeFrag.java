@@ -3,11 +3,11 @@ package com.turquoise.hotelbookrecomendation.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +33,8 @@ public class HomeFrag extends Fragment {
     private String mParam2;
     private HotelAdapter hotelAdapter;
     HotelResult hotelResult;
+    RecyclerView recyclerView;
+    int lastPos=0;
 
     public HomeFrag() {
         // Required empty public constructor
@@ -71,8 +73,23 @@ public class HomeFrag extends Fragment {
 
 
         View view=inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView=view.findViewById(R.id.hotelList);
+
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        lastPos = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+
     }
 
     public String getHotels(){
@@ -91,8 +108,6 @@ public class HomeFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        RecyclerView recyclerView=getActivity().findViewById(R.id.hotelList);
-
         HotelAdapter hotelAdapter=new HotelAdapter(getContext());
         Gson gson=new Gson();
 
@@ -101,7 +116,7 @@ public class HomeFrag extends Fragment {
 
             BufferedReader br = null;
             try {
-                br = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("hotels.json")));
+                br = new BufferedReader(new InputStreamReader(getContext().getAssets().open("hotels.json")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,9 +129,10 @@ public class HomeFrag extends Fragment {
         }
 
         hotelAdapter.setHotels(hotelResult.getHotels());
-        Log.d("afafaf", "onCreateView: "+hotelResult.getHotels().get(0).getCompletedBookings());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(hotelAdapter);
+
+        recyclerView.getLayoutManager().scrollToPosition(lastPos);
 
     }
 

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -40,6 +41,7 @@ public class Recommendation extends Fragment {
     private String mParam2;
     public static Set<String> tagSet = new HashSet<>();
     RecommendationAdapter recommendationAdapter;
+    TextView placeholderEmpty;
 
 
     private HotelResult hotelResult;
@@ -81,7 +83,7 @@ public class Recommendation extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recommendation, container, false);
 
-
+        placeholderEmpty=v.findViewById(R.id.emptyRecommendationPlaceHolder);
         RecyclerView recyclerView = v.findViewById(R.id.hotelList);
 
         this.recommendationAdapter = new RecommendationAdapter(getContext());
@@ -90,6 +92,8 @@ public class Recommendation extends Fragment {
         recommendationAdapter.setHotels(getHotelWithTags());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(recommendationAdapter);
+
+
 
         return v;
 
@@ -100,6 +104,12 @@ public class Recommendation extends Fragment {
     public void onResume() {
         super.onResume();
 
+        if(recommendationAdapter.getItemCount()==0){
+            placeholderEmpty.setVisibility(View.VISIBLE);
+        }
+        else{
+            placeholderEmpty.setVisibility(View.INVISIBLE);
+        }
 
     }
 

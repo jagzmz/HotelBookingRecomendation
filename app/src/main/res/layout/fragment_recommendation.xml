@@ -9,7 +9,17 @@
         android:tag="reco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/hotelList"
-        />
+        android:id="@+id/hotelList" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:id="@+id/emptyRecommendationPlaceHolder"
+        android:text="Book hotel for getting a recommendation"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:textSize="23sp"/>
 
 </RelativeLayout>

@@ -1,5 +1,8 @@
 # Hotel Booking & Recommendations
 
+## Workflow
+<img src='./hotelapp.gif'>
+
 ## Problem Statement
 1.  Take a sample JSON for a list of Hotels
 2.  The hotel shall have most basic identifying fields
@@ -7,12 +10,8 @@
 4.  Track the visitors on a hotel page
 6.  Users make a Draft Booking, where the user tries to book a hotel but don't complete the process
 7.  Users book a Hotel i.e. Create a completed booking
-  
 8.  Display the activities happening around hotel page (Visits, Draft Bookings, Completed Booking)
-    
-
 9.  Display recommendations of other hotels based on the activities done by the user.
-    
 10.  Implement a basic UI with minimal functionality required.
 
 ## App Features
